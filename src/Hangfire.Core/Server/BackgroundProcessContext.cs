@@ -43,5 +43,15 @@ namespace Hangfire.Server
 
         public JobStorage Storage { get; private set; }
         public CancellationToken CancellationToken { get; private set; }
+
+        [ThreadStatic] 
+        private static BackgroundProcessContext _current;
+
+
+        public static BackgroundProcessContext Current
+        {
+            get { return _current; }
+            set { _current = value; }
+        }
     }
 }

@@ -102,8 +102,9 @@ namespace Hangfire.Common
             object instance = null;
 
             object result;
-            try
+            using (activator.BeginScope())
             {
+
                 if (!Method.IsStatic)
                 {
                     instance = Activate(activator);
@@ -111,11 +112,9 @@ namespace Hangfire.Common
 
                 var deserializedArguments = DeserializeArguments(cancellationToken);
                 result = InvokeMethod(instance, deserializedArguments);
+               
             }
-            finally
-            {
-                Dispose(instance);
-            }
+
 
             return result;
         }

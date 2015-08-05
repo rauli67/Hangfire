@@ -70,6 +70,8 @@ namespace Hangfire.Server
                 {
                     var stateMachine = stateMachineFactory.Create(connection);
 
+                    BackgroundProcessContext.Current = context;
+
                     using (var timeoutCts = new CancellationTokenSource(JobInitializationWaitTimeout))
                     using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
                         context.CancellationToken,
@@ -80,7 +82,7 @@ namespace Hangfire.Server
                         if (!stateMachine.ChangeState(
                             fetchedJob.JobId,
                             processingState,
-                            new[] { EnqueuedState.StateName, ProcessingState.StateName },
+                            new[] {EnqueuedState.StateName, ProcessingState.StateName},
                             linkedCts.Token))
                         {
                             // We should re-queue a job identifier only when graceful shutdown
@@ -106,7 +108,7 @@ namespace Hangfire.Server
                     if (state != null)
                     {
                         // Ignore return value, because we should not do anything when current state is not Processing.
-                        stateMachine.ChangeState(fetchedJob.JobId, state, new[] { ProcessingState.StateName });
+                        stateMachine.ChangeState(fetchedJob.JobId, state, new[] {ProcessingState.StateName});
                     }
 
                     // Checkpoint #4. The job was performed, and it is in the one
@@ -129,6 +131,10 @@ namespace Hangfire.Server
 
                     fetchedJob.Requeue();
                     throw;
+                }
+                finally
+                {
+                    BackgroundProcessContext.Current = null;
                 }
             }
         }

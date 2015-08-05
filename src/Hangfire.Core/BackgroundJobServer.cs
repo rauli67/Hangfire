@@ -89,7 +89,8 @@ namespace Hangfire
             var properties = new Dictionary<string, object>
             {
                 { "Queues", options.Queues },
-                { "WorkerCount", options.WorkerCount }
+                { "WorkerCount", options.WorkerCount },
+                { "ServerName", options.ServerName }
             };
 
             Logger.Info("Starting Hangfire Server");
