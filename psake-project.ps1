@@ -17,7 +17,7 @@ Task Test -Depends Compile -Description "Run unit and integration tests under Op
     
     Run-OpenCover "Hangfire.Core.Tests"
     Run-OpenCover "Hangfire.SqlServer.Tests"
-    Run-OpenCover "Hangfire.SqlServer.Msmq.Tests"
+    #Run-OpenCover "Hangfire.SqlServer.Msmq.Tests"
 }
 
 Task Merge -Depends Test -Description "Run ILMerge /internalize to merge assemblies." {

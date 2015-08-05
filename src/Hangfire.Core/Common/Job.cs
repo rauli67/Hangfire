@@ -102,19 +102,22 @@ namespace Hangfire.Common
             object instance = null;
 
             object result;
-            using (activator.BeginScope())
-            {
 
+            var scope = activator.BeginScope();
+            try
+            {                
                 if (!Method.IsStatic)
                 {
-                    instance = Activate(activator);
+                    instance = Activate(scope);
                 }
 
                 var deserializedArguments = DeserializeArguments(cancellationToken);
                 result = InvokeMethod(instance, deserializedArguments);
-               
             }
-
+            finally
+            {
+                Dispose(scope);
+            }
 
             return result;
         }
@@ -257,11 +260,11 @@ namespace Hangfire.Common
             }
         }
 
-        private object Activate(JobActivator activator)
+        private object Activate(JobActivatorScope scope)
         {
             try
             {
-                var instance = activator.ActivateJob(Type);
+                var instance = scope.Resolve(Type);
 
                 if (instance == null)
                 {

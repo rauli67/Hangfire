@@ -17,7 +17,7 @@ namespace Hangfire.Core.Tests.Common
 
 		public JobArgumentFacts()
 		{
-			_activator = new Mock<JobActivator>();
+			_activator = new Mock<JobActivator>{ CallBase = true };
 			_activator.Setup(x => x.ActivateJob(It.IsAny<Type>()))
 				      .Returns(() => new JobArgumentFacts());
 
